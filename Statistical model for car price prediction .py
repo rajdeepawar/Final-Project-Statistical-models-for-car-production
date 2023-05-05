@@ -277,5 +277,34 @@ print("Predicted price of Swift (2013):", price_prediction[0])
 # In[ ]:
 
 
+"#Scatter plot for Gradient Boosting
 
+plt.scatter(Y_test, y_gb_test_pred) plt.xlabel('Real Values') plt.ylabel('Predicted Values') plt.title('Gradient Boosting Model') plt.show()
+#Scatter plot for XGBoost
 
+plt.scatter(Y_test, y_xgb_test_pred) plt.xlabel('Real Values') plt.ylabel('Predicted Values') plt.title('XGBoost Model') plt.show()
+#Scatter plot for Random Forest base model
+
+plt.scatter(Y_test, y_rf_test_pred) plt.xlabel('Real Values') plt.ylabel('Predicted Values') plt.title('Random Forest base model') plt.show()
+
+#Scatter plot for Random Forest hyperparameter tuned with random search
+
+plt.scatter(Y_test, y_rf_random_test_pred) plt.xlabel('Real Values') plt.ylabel('Predicted Values') plt.title('Random Forest hyperparameter tuned with random search') plt.show()"
+
+ "#Random Forest base model
+
+from sklearn.ensemble import RandomForestRegressor rf = RandomForestRegressor(random_state=0) rf.fit(X_train, Y_train) y_rf_train_pred = rf.predict(X_train) y_rf_test_pred = rf.predict(X_test)
+
+#Evaluation Metrics for Random Forest base model
+
+print("\nRandom Forest base model:") print("Mean Squared Error (MSE) train: {:.4f}".format(metrics.mean_squared_error(Y_train, y_rf_train_pred)*1000)) print("Mean Squared Error (MSE) test: {:.4f}".format(metrics.mean_squared_error(Y_test, y_rf_test_pred)*1000)) print("Mean Absolute Error (MAE) train: {:.4f}".format(metrics.mean_absolute_error(Y_train, y_rf_train_pred)*1000)) print("Mean Absolute Error (MAE) test: {:.4f}".format(metrics.mean_absolute_error(Y_test, y_rf_test_pred)*1000)) print("R-squared train: {:.4f}".format(metrics.r2_score(Y_train, y_rf_train_pred)*100)) print("R-squared test: {:.4f}".format(metrics.r2_score(Y_test, y_rf_test_pred)*100))
+
+#Random Forest hyperparameter tuned with random search
+
+from sklearn.model_selection import RandomizedSearchCV from scipy.stats import randint as sp_randint param_dist = {"n_estimators": sp_randint(10, 100), "max_depth": sp_randint(5, 15), "min_samples_split": sp_randint(2, 10), "min_samples_leaf": sp_randint(1, 10), "max_features": sp_randint(1, 5)}
+
+n_iter_search = 20 rf_random = RandomizedSearchCV(rf, param_distributions=param_dist, n_iter=n_iter_search, cv=5, random_state=0) rf_random.fit(X_train, Y_train) y_rf_random_train_pred = rf_random.predict(X_train) y_rf_random_test_pred = rf_random.predict(X_test)
+
+#Evaluation Metrics for Random Forest hyperparameter tuned with random search
+
+print("\nRandom Forest hyperparameter tuned with random search:") print("Mean Squared Error (MSE) train: {:.4f}".format(metrics.mean_squared_error(Y_train, y_rf_random_train_pred)*1000)) print("Mean Squared Error (MSE) test: {:.4f}".format(metrics.mean_squared_error(Y_test, y_rf_random_test_pred)*1000)) print("Mean Absolute Error (MAE) train: {:.4f}".format(metrics.mean_absolute_error(Y_train, y_rf_random_train_pred)*1000)) print("Mean Absolute Error (MAE) test: {:.4f}".format(metrics.mean_absolute_error(Y_test, y_rf_random_test_pred)*1000)) print("R-squared train: {:.4f}".format(metrics.r2_score(Y_train, y_rf_random_train_pred)*100)) print("R-squared test: {:.4f}".format(metrics.r2_score(Y_test, y_rf_random_test_pred)*100))"
